@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-from app.api.auth import router as auth_router
-from app.api.users import router as users_router
+from app.controllers.auth import router as auth_router
+from app.controllers.users import router as users_router
 from fastapi.openapi.utils import get_openapi
-from app.api.listings import router as listings_router
-from app.api.categories import router as categories_router
-from app.api.messages import router as messages_router
+from app.controllers.listings import router as listings_router
+from app.controllers.categories import router as categories_router
+from app.controllers.messages import router as messages_router
 app = FastAPI()
 
 def custom_openapi():
