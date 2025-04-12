@@ -1,6 +1,6 @@
 from decimal import Decimal
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.orm import Session
 from app.db.repositories.listing_repository import get_listing_by_id, update_listing
 from app.services.listing_service import (
@@ -15,20 +15,22 @@ from app.services.listing_service import (
 )
 from app.db.database import get_db
 from app.schemas.listings import ListingResponse, PhotoResponse, ListingCreate
-from app.core.security import get_current_user
+from app.services.auth_service import get_current_user
 
-router = APIRouter()
+router = APIRouter(
+    tags=["Listings"]
+)
 
 @router.get("/ads/", response_model=List[ListingResponse])
 def get_ads_route(
     db: Session = Depends(get_db),
-    categories: Optional[List[int]] = None,
-    city: Optional[str] = None,
-    price_min: Optional[Decimal] = None,
-    price_max: Optional[Decimal] = None,
-    area_min: Optional[Decimal] = None,
-    area_max: Optional[Decimal] = None,
-    rooms: Optional[List[int]] = None,
+    categories: Optional[List[int]] = Query(None),
+    city: Optional[str] = Query(None),
+    price_min: Optional[Decimal] = Query(None),
+    price_max: Optional[Decimal] = Query(None),
+    area_min: Optional[Decimal] = Query(None),
+    area_max: Optional[Decimal] = Query(None),
+    rooms: Optional[List[int]] = Query(None),
 ):
     return get_ads(
         db, categories, city, price_min, price_max, area_min, area_max, rooms
@@ -103,7 +105,7 @@ def delete_ad(
     if ad.user_id != current_user.user_id:
         raise HTTPException(status_code=403, detail="Нет доступа")
 
-    delete_listing_data(db, ad)
+    delete_listing_data(db, ad.listing_id)
 
     return {"msg": "Объявление удалено"}
 

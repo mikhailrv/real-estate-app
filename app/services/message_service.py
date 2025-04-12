@@ -6,22 +6,23 @@ from app.db.repositories.message_repository import (
     create_chat,
     create_message,
     get_chats_for_user,
-    get_last_message_in_chat
+    get_last_message_in_chat,
+    get_messages_by_chat_id
 )
 
 def create_message_with_chat(db: Session, sender_id: int, ad_id: int, message_create: MessageCreate) -> Message:
-    chat = find_existing_chat(db, sender_id, message_create.receiver_id)
+    chat = find_existing_chat(db, sender_id, ad_id)
 
     if not chat:
-        chat = create_chat(db, sender_id, message_create.receiver_id)
+        chat = create_chat(db, sender_id, ad_id)
 
-    return create_message(db, sender_id, message_create.receiver_id, ad_id, message_create.message, chat.chat_id)
+    return create_message(db, sender_id, ad_id, message_create.message, chat.chat_id)
 
 def fetch_user_chats(db: Session, user_id: int):
     chats = get_chats_for_user(db, user_id)
 
     if not chats:
-        raise Exception("Чаты не найдены")
+        return
 
     chat_responses = []
     for chat in chats:
@@ -46,3 +47,6 @@ def fetch_user_chats(db: Session, user_id: int):
         ))
 
     return chat_responses
+
+def fetch_messages_for_chat(db: Session, chat_id: int):
+    return get_messages_by_chat_id(db, chat_id)

@@ -1,4 +1,3 @@
-# app/db/repositories/category_repository.py
 from sqlalchemy.orm import Session
 from app.db.models import Category
 

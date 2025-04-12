@@ -38,7 +38,7 @@ def get_ad_by_id(db: Session, ad_id: int):
 
 
 def create_ad(db: Session, user_id: int, listing_data: ListingCreate):
-    listing_data_dict = listing_data.model_dump()
+    listing_data_dict = listing_data.dict()
 
     new_listing = create_listing(db, user_id, listing_data_dict)
         
@@ -55,8 +55,10 @@ def delete_listing_data(db: Session, ad_id: int):
 def create_or_delete_favorite(db: Session, user_id: int, ad_id: int):
     existing_fav = get_favorite(db, user_id, ad_id)
     if existing_fav:
-        return remove_from_favorites(db, user_id, ad_id)
-    return add_to_favorites(db, user_id, ad_id)
+        remove_from_favorites(db, user_id, ad_id)
+        return{"detail": "Удалено из избранного"}
+    add_to_favorites(db, user_id, ad_id)
+    return{"detail": "Добавлено в избранное"}
 
 def get_user_favorites(db: Session, user_id: int):
     return get_favorites(db, user_id)

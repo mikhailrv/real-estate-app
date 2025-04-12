@@ -8,8 +8,9 @@ from app.db.database import get_db
 from datetime import timedelta
 from app.core.config import settings
 
-router = APIRouter()
-
+router = APIRouter(
+    tags=["Authorization"]
+)
 
 @router.post("/register/")
 def register_user(user: UserCreate, db: Session = Depends(get_db)):

@@ -5,6 +5,8 @@ from fastapi.openapi.utils import get_openapi
 from app.controllers.listings import router as listings_router
 from app.controllers.categories import router as categories_router
 from app.controllers.messages import router as messages_router
+from app.controllers.property_types import router as property_types_router
+
 app = FastAPI()
 
 def custom_openapi():
@@ -37,6 +39,6 @@ app.include_router(auth_router)
 app.include_router(users_router)
 app.include_router(listings_router)
 app.include_router(categories_router)
-
+app.include_router(property_types_router)
 
 

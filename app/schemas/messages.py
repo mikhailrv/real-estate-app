@@ -2,8 +2,6 @@ from pydantic import BaseModel
 from datetime import datetime
 
 class MessageCreate(BaseModel):
-    receiver_id: int
-    listing_id: int
     message: str
 
 class MessageResponse(BaseModel):
