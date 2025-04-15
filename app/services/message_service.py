@@ -1,11 +1,12 @@
 from sqlalchemy.orm import Session
 from app.db.models import Message
-from app.schemas.messages import MessageCreate, MessageResponse, ChatResponse
+from app.schemas.messages import CompanionResponse, MessageCreate, MessageResponse, ChatResponse
 from app.db.repositories.message_repository import (
     find_existing_chat,
     create_chat,
     create_message,
     get_chats_for_user,
+    get_companion,
     get_last_message_in_chat,
     get_messages_by_chat_id
 )
@@ -27,6 +28,7 @@ def fetch_user_chats(db: Session, user_id: int):
     chat_responses = []
     for chat in chats:
         last_message = get_last_message_in_chat(db, chat.chat_id)
+        companion = get_companion(db, chat,user_id)
 
         if last_message:
             last_message_response = MessageResponse(
@@ -43,7 +45,11 @@ def fetch_user_chats(db: Session, user_id: int):
             user_1_id=chat.user_1_id,
             user_2_id=chat.user_2_id,
             created_at=chat.created_at,
-            last_message=last_message_response
+            last_message=last_message_response,
+            companion=CompanionResponse(
+                user_id = companion.user_id, 
+                first_name = companion.first_name, 
+                last_name = companion.last_name)
         ))
 
     return chat_responses

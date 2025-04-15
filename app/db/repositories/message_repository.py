@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from app.db.models import Chat, Listing, Message
+from app.db.models import Chat, Listing, Message, User
 from sqlalchemy import or_
 
 def find_existing_chat(db: Session, user1_id: int, ad_id: int):
@@ -35,9 +35,13 @@ def get_chats_for_user(db: Session, user_id: int):
     return db.query(Chat).filter(
         (Chat.user_1_id == user_id) | (Chat.user_2_id == user_id)).all()
 
+def get_companion(db: Session, chat: Chat, user_id: int):
+    companion_id = chat.user_2_id if chat.user_1_id == user_id else chat.user_1_id
+    return db.query(User).filter(User.user_id == companion_id).first()
 
 def get_last_message_in_chat(db: Session, chat_id: int):
     return db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.sent_at.desc()).first()
 
 def get_messages_by_chat_id(db: Session, chat_id: int):
     return db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.sent_at).all()
+

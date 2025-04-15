@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import Icon from 'react-native-vector-icons/Ionicons';
 import BASE_URL from '../config';
+import BottomNavigation from './components/bottomNavigation';
 
 export default function ProfileScreen({ navigation }) {
   const [user, setUser] = useState(null);
@@ -19,7 +19,7 @@ export default function ProfileScreen({ navigation }) {
     const fetchProfile = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://BASE_URL/users/me', {
+        const response = await axios.get(BASE_URL+'/users/me', {
           headers: { Authorization: `Bearer ${token}` }
         });
 
@@ -42,7 +42,7 @@ export default function ProfileScreen({ navigation }) {
   const handleSave = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.put('http://192.168.1.129:8000/users/me', form, {
+      const response = await axios.put(BASE_URL+'/users/me', form, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(response.data);
@@ -94,25 +94,8 @@ export default function ProfileScreen({ navigation }) {
         >
           <Text style={styles.editButtonText}>{editable ? 'Сохранить' : 'Редактировать'}</Text>
         </TouchableOpacity>
-      </View>
 
-      <View style={styles.bottomButtons}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Icon name="home-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Главная</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Icon name="chatbubbles-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Сообщения</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Favorites')}> 
-          <Icon name="heart-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Избранное</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Profile')}>
-          <Icon name="person-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Профиль</Text>
-        </TouchableOpacity>
+        <BottomNavigation />
       </View>
     </SafeAreaView>
   );
@@ -153,29 +136,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     fontWeight: 'bold',
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    borderTopWidth: 1,
-    borderColor: '#eee',
-    backgroundColor: '#fff',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 80,
-    height: 60,
-    backgroundColor: '#007aff',
-    borderRadius: 15,
-  },
-  icon: {
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 12,
   },
 });

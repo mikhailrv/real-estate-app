@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BASE_URL from '../config';
+import Icon from 'react-native-vector-icons/Ionicons'; 
+import BottomNavigation from './components/bottomNavigation';
 
 export default function ChatsScreen({ navigation }) {
   const [chats, setChats] = useState([]);
@@ -11,7 +13,7 @@ export default function ChatsScreen({ navigation }) {
     const fetchChats = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://BASE_URL/messages/chats/', {
+        const response = await axios.get(BASE_URL+'/messages/chats', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -31,8 +33,8 @@ export default function ChatsScreen({ navigation }) {
       onPress={() => navigation.navigate('Messages', { chatId: item.chat_id })}
     >
       <View style={styles.chatInfo}>
-        <Text style={styles.username}>{item.partner_name}</Text>
-        <Text style={styles.lastMessage}>{item.last_message}</Text>
+        <Text style={styles.username}>{item.companion.first_name + ' '+ item.companion.last_name}</Text>
+        <Text style={styles.lastMessage}>{item.last_message.message}</Text>
       </View>
       <Icon name="chevron-forward-outline" size={20} color="#aaa" />
     </TouchableOpacity>
@@ -46,6 +48,8 @@ export default function ChatsScreen({ navigation }) {
         renderItem={renderItem}
         contentContainerStyle={styles.listContainer}
       />
+
+      <BottomNavigation />
     </View>
   );
 }

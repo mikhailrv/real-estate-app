@@ -4,6 +4,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BASE_URL from '../config';
 
+
 export default function AuthScreen({ navigation, route }) {
   const [first_name, setFirstName] = useState('');
   const [last_name, setLastName] = useState('');
@@ -19,7 +20,7 @@ export default function AuthScreen({ navigation, route }) {
 
     if (isLogin) {
       try {
-        const response = await axios.post('http://BASE_URL/login/', {
+        const response = await axios.post(BASE_URL+'/login/', {
           email,
           password,
         });
@@ -34,7 +35,7 @@ export default function AuthScreen({ navigation, route }) {
 
     } else {
       try {
-        const response = await axios.post('http://192.168.42.245:8000/register/', {
+        const response = await axios.post(BASE_URL+'/register/', {
           first_name,
           last_name,
           email,

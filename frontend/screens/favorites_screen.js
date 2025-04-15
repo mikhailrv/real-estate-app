@@ -4,6 +4,7 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';  
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BASE_URL from '../config';
+import BottomNavigation from './components/bottomNavigation';
 
 export default function FavoritesScreen({ navigation }) {
   const [ads, setAds] = useState([]);
@@ -12,7 +13,7 @@ export default function FavoritesScreen({ navigation }) {
     const fetchAds = async () => {
       try {
         const token = await AsyncStorage.getItem('token');
-        const response = await axios.get('http://BASE_URL/favorites', {
+        const response = await axios.get(BASE_URL+'/favorites/', {
             headers: { Authorization: `Bearer ${token}` }
           })
         setAds(response.data);
@@ -30,7 +31,7 @@ export default function FavoritesScreen({ navigation }) {
       onPress={() => navigation.navigate('AdDetail', { listingId: item.listing_id })} 
     > 
 
-      <Image source={{ uri: `http://192.168.42.245:8000/${item.images[0]?.photo_url}` }} style={styles.cardImage} />
+      <Image source={{ uri: BASE_URL+`/${item.images[0]?.photo_url}` }} style={styles.cardImage} />
 
       <View style={styles.cardContent}> 
 
@@ -53,28 +54,7 @@ export default function FavoritesScreen({ navigation }) {
         numColumns={2}  
         contentContainerStyle={styles.listContainer}
       />
-
-      <View style={styles.bottomButtons}>
-        
-        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.button}>
-          <Icon name="home-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Главная</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Icon name="chatbubbles-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Сообщения</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button}>
-          <Icon name="heart-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Избранное</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')} style={styles.button} >
-          <Icon name="person-outline" size={30} color="#fff" style={styles.icon} />
-          <Text style={styles.buttonText}>Профиль</Text>
-          
-        </TouchableOpacity>
-      </View>
+      <BottomNavigation /> 
     </View>
   );
 }
@@ -130,26 +110,5 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 12,
     color: '#888',
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    marginTop: 10,
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 80,
-    height: 60,
-    backgroundColor: '#007aff',
-    borderRadius: 15,
-  },
-  icon: {
-    marginBottom: 5,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 12,
   },
 });
