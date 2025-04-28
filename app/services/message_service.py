@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
-from app.db.models import Message
+from app.db.models import Message, User
 from app.schemas.messages import CompanionResponse, MessageCreate, MessageResponse, ChatResponse
 from app.db.repositories.message_repository import (
+    count_unread_messages,
     find_existing_chat,
     create_chat,
     create_message,
@@ -28,7 +29,8 @@ def fetch_user_chats(db: Session, user_id: int):
     chat_responses = []
     for chat in chats:
         last_message = get_last_message_in_chat(db, chat.chat_id)
-        companion = get_companion(db, chat,user_id)
+        companion = get_companion(db, chat, user_id)
+        unread_count=count_unread_messages(db, chat.chat_id, user_id)
 
         if last_message:
             last_message_response = MessageResponse(
@@ -37,8 +39,11 @@ def fetch_user_chats(db: Session, user_id: int):
                 receiver_id=last_message.receiver_id,
                 listing_id=last_message.listing_id,
                 message=last_message.message,
-                sent_at=last_message.sent_at
+                sent_at=last_message.sent_at,
+                isRead = last_message.isRead
             )
+
+
 
         chat_responses.append(ChatResponse(
             chat_id=chat.chat_id,
@@ -46,6 +51,7 @@ def fetch_user_chats(db: Session, user_id: int):
             user_2_id=chat.user_2_id,
             created_at=chat.created_at,
             last_message=last_message_response,
+            unread_count=unread_count,
             companion=CompanionResponse(
                 user_id = companion.user_id, 
                 first_name = companion.first_name, 
@@ -54,5 +60,9 @@ def fetch_user_chats(db: Session, user_id: int):
 
     return chat_responses
 
-def fetch_messages_for_chat(db: Session, chat_id: int):
-    return get_messages_by_chat_id(db, chat_id)
+def fetch_messages_for_chat(db: Session, chat_id: int, user: User):
+    messages = get_messages_by_chat_id(db, chat_id)
+    for message in messages:
+        if message.receiver_id == user.id and not message.is_read:
+            message.is_read = True
+    return messages

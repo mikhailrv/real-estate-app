@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BASE_URL from '../config';
 import BottomNavigation from './components/bottomNavigation';
+import ScreenTitle from './components/screenTitle';
 
 export default function FavoritesScreen({ navigation }) {
   const [ads, setAds] = useState([]);
@@ -46,7 +47,7 @@ export default function FavoritesScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-
+      <ScreenTitle title="Избранное" />
       <FlatList
         data={ads}
         keyExtractor={(item) => item.listing_id.toString()}

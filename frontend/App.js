@@ -9,6 +9,7 @@ import ProfileScreen from './screens/profile_screen';
 import FavoritesScreen from './screens/favorites_screen'; 
 import 'react-native-gesture-handler';
 import ChatsScreen from './screens/chats_screen'; 
+import ListingDetailsScreen from './screens/listing_details_screen';
 const Stack = createStackNavigator(); 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Favorites" component={FavoritesScreen} />
         <Stack.Screen name="Chats" component={ChatsScreen} />
+        <Stack.Screen name="ListingDetails" component={ListingDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

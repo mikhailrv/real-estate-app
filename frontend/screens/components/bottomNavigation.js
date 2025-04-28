@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     bottomButtons: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        backgroundColor: '#000',
+        backgroundColor: '#fff',
         paddingVertical: 10,
         position: 'absolute',
         bottom: 0,

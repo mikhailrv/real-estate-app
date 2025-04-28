@@ -24,7 +24,8 @@ def create_message(db: Session, sender_id: int, listing_id: int, message_text: s
         receiver_id= db.query(Listing).filter(Listing.listing_id == listing_id).first().user_id,
         listing_id=listing_id,
         message=message_text,
-        chat_id=chat_id
+        chat_id=chat_id,
+        isRead = False
     )
     db.add(message)
     db.commit()
@@ -44,4 +45,11 @@ def get_last_message_in_chat(db: Session, chat_id: int):
 
 def get_messages_by_chat_id(db: Session, chat_id: int):
     return db.query(Message).filter(Message.chat_id == chat_id).order_by(Message.sent_at).all()
+
+def count_unread_messages(db: Session, chat_id: int, user_id: int):
+    return db.query(Message).filter(
+        Message.chat_id == chat_id,
+        Message.receiver_id == user_id,
+        Message.isRead == False
+    ).count()
 

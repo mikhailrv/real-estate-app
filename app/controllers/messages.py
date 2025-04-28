@@ -32,8 +32,8 @@ def get_dialogs(
     return chats
 
 @router.get("/{chat_id}/", response_model=List[MessageResponse])
-def get_messages(chat_id: int, db: Session = Depends(get_db)):
-    messages = fetch_messages_for_chat(db, chat_id)
+def get_messages(chat_id: int, db: Session = Depends(get_db), user: User = (Depends(get_current_user))):
+    messages = fetch_messages_for_chat(db, chat_id, user)
     if not messages:
         raise HTTPException(status_code=404, detail="No messages found for this chat")
     return messages

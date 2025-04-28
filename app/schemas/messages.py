@@ -11,6 +11,7 @@ class MessageResponse(BaseModel):
     listing_id: int
     message: str
     sent_at: datetime
+    isRead: bool
 
     class Config:
         orm_mode = True
@@ -34,6 +35,7 @@ class ChatResponse(BaseModel):
     created_at: datetime
     last_message: MessageResponse
     companion: CompanionResponse
+    unread_count: int
 
     class Config:
         orm_mode = True

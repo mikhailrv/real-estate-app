@@ -24,7 +24,8 @@ export default function HomeScreen({ navigation }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.card} 
-      onPress={() => navigation.navigate('AdDetail', { listingId: item.listing_id })} 
+      onPress={() => navigation.navigate('ListingDetails', { listingId: item.listing_id })}
+
     > 
 
       <Image source={{ uri: BASE_URL+`/${item.images[0]?.photo_url}` }} style={styles.cardImage} />
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   listContainer: {
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
   card: {
     backgroundColor: '#fff',

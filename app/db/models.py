@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DECIMAL, ForeignKey, TIMESTAMP, Table, UniqueConstraint
+from sqlalchemy import Column, Integer, String, DECIMAL, ForeignKey, TIMESTAMP, Table, UniqueConstraint, Boolean
 from sqlalchemy.orm import relationship, declarative_base
 from sqlalchemy import func
 
@@ -81,6 +81,7 @@ class Message(Base):
     message = Column(String, nullable=False)
     sent_at = Column(TIMESTAMP, default=func.now())
     chat_id = Column(Integer, ForeignKey('chats.chat_id', ondelete='CASCADE'))
+    isRead = Column(Boolean, default = False)
 
     sender = relationship("User", foreign_keys=[sender_id])
     receiver = relationship("User", foreign_keys=[receiver_id])
