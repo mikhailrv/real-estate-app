@@ -9,6 +9,7 @@ from app.services.listing_service import (
     get_ads,
     get_ad_by_id,
     create_ad,
+    has_favorite,
     update_listing_data,
     upload_photo_to_ad,
     get_user_favorites
@@ -124,3 +125,8 @@ def get_favorites(
     user = Depends(get_current_user)
 ):
     return get_user_favorites(db, user.user_id)
+
+@router.get("/favorites/{ad_id}")
+def check_favorite(ad_id: int, db: Session = Depends(get_db), current_user=Depends(get_current_user)):
+    favorite = has_favorite(db, current_user.user_id, ad_id)
+    return {"is_favorite": bool(favorite)}

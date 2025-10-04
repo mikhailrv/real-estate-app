@@ -12,25 +12,31 @@ def find_existing_chat(db: Session, user1_id: int, ad_id: int):
     ).first()
 
 def create_chat(db: Session, user1_id: int, ad_id: int):
-    chat = Chat(user_1_id=user1_id, user_2_id=db.query(Listing).filter(Listing.listing_id == ad_id).first().user_id)
+    listing = db.query(Listing).filter(Listing.listing_id == ad_id).first()
+    
+    chat = Chat(user_1_id=user1_id, user_2_id=listing.user_id, listing_id=ad_id)
     db.add(chat)
     db.commit()
     db.refresh(chat)
     return chat
 
-def create_message(db: Session, sender_id: int, listing_id: int, message_text: str, chat_id: int):
+
+def create_message(db: Session, sender_id: int, message_text: str, chat_id: int):
+    listing = db.query(Listing).filter(Listing.listing_id == get_last_message_in_chat(db, chat_id).listing_id).first()
+    
     message = Message(
         sender_id=sender_id,
-        receiver_id= db.query(Listing).filter(Listing.listing_id == listing_id).first().user_id,
-        listing_id=listing_id,
+        receiver_id=listing.user_id,
+        listing_id=listing.listing_id,
         message=message_text,
         chat_id=chat_id,
-        isRead = False
+        isRead=False
     )
     db.add(message)
     db.commit()
     db.refresh(message)
     return message
+
 
 def get_chats_for_user(db: Session, user_id: int):
     return db.query(Chat).filter(

@@ -1,5 +1,6 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.db.models import Message, User
+from app.db.models import Chat, Message, User
 from app.schemas.messages import CompanionResponse, MessageCreate, MessageResponse, ChatResponse
 from app.db.repositories.message_repository import (
     count_unread_messages,
@@ -12,13 +13,14 @@ from app.db.repositories.message_repository import (
     get_messages_by_chat_id
 )
 
-def create_message_with_chat(db: Session, sender_id: int, ad_id: int, message_create: MessageCreate) -> Message:
-    chat = find_existing_chat(db, sender_id, ad_id)
-
+def create_message_with_chat(db: Session, sender_id: int, chat_id: int, message_create: MessageCreate) -> Message:
+    chat = db.query(Chat).filter(Chat.chat_id == chat_id).first()
     if not chat:
-        chat = create_chat(db, sender_id, ad_id)
+        create_chat(db, sender_id )
 
-    return create_message(db, sender_id, ad_id, message_create.message, chat.chat_id)
+
+    return create_message(db, sender_id, message_create.message, chat_id)
+
 
 def fetch_user_chats(db: Session, user_id: int):
     chats = get_chats_for_user(db, user_id)
@@ -63,6 +65,8 @@ def fetch_user_chats(db: Session, user_id: int):
 def fetch_messages_for_chat(db: Session, chat_id: int, user: User):
     messages = get_messages_by_chat_id(db, chat_id)
     for message in messages:
-        if message.receiver_id == user.id and not message.is_read:
-            message.is_read = True
+        if message.sender_id == user.user_id:
+            message.isRead = True          
+        if message.receiver_id == user.user_id and not message.isRead:
+            message.isRead = True
     return messages

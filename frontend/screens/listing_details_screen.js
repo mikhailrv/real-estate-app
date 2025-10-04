@@ -4,14 +4,19 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Carousel from 'react-native-reanimated-carousel';
 import BASE_URL from '../config';
+import { TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons'; 
+
+
 
 const { width: screenWidth } = Dimensions.get('window');
 
-export default function ListingDetailsScreen({ route }) {
+export default function ListingDetailsScreen({ navigation, route }) {
   const { listingId } = route.params;
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -23,6 +28,17 @@ export default function ListingDetailsScreen({ route }) {
           },
         });
         setListing(response.data);
+
+        const favoriteResponse = await axios.get(`${BASE_URL}/favorites/${listingId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (favoriteResponse.data.is_favorite) {
+          setIsFavorite(true);
+        } else {
+          setIsFavorite(false);
+        }
       } catch (error) {
         console.error('Ошибка при загрузке объявления:', error);
       } finally {
@@ -48,7 +64,41 @@ export default function ListingDetailsScreen({ route }) {
       </View>
     );
   }
+  const handleSendMessage = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post(`${BASE_URL}/messages/chat_by_listing/${listingId}/`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const chatId = response.data.chat_id;
+  
+      navigation.navigate('Messages', { chatId });
+    } catch (error) {
+      console.error('Ошибка при создании чата:', error);
+    }
+  };
+  
+  
+  const handleToggleFavorite = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const response = await axios.post(`${BASE_URL}/favorites/${listingId}/`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      setIsFavorite((prev) => !prev);
 
+    } catch (error) {
+      console.error('Ошибка при добавлении в избранное:', error);
+      alert('Ошибка при добавлении в избранное');
+    }
+  };
+
+  
   return (
     <ScrollView style={styles.container}>
       {listing.images.length > 0 && (
@@ -89,8 +139,22 @@ export default function ListingDetailsScreen({ route }) {
 
 
       <View style={styles.infoContainer}>
-        <Text style={styles.price}>{listing.price} ₽</Text>
-        <Text style={styles.type}>{listing.property_type.name}</Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.price}>{Math.round(listing.price)} ₽</Text>
+        
+          <View style={styles.buttonsRow}>
+            <TouchableOpacity style={styles.circleButton} onPress={handleSendMessage}>
+              <Ionicons name="chatbubble-ellipses-outline" size={38} color="#007bff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.circleButton} onPress={handleToggleFavorite}>
+              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={38} color="#ff3b30" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+      <Text style={styles.type}>{listing.property_type.name}</Text>
+
 
         <Text style={styles.label}>Описание:</Text>
         <Text style={styles.text}>{listing.description}</Text>
@@ -204,4 +268,21 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  buttonsRow: {
+    flexDirection: 'row',
+  },
+  circleButton: {
+    width: 60,
+    height: 60,
+    borderRadius: 40,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },  
 });

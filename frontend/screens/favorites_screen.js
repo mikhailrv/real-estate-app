@@ -29,7 +29,7 @@ export default function FavoritesScreen({ navigation }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.card} 
-      onPress={() => navigation.navigate('AdDetail', { listingId: item.listing_id })} 
+      onPress={() => navigation.navigate('ListingDetails', { listingId: item.listing_id })}
     > 
 
       <Image source={{ uri: BASE_URL+`/${item.images[0]?.photo_url}` }} style={styles.cardImage} />

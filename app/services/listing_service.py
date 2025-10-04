@@ -67,3 +67,7 @@ def update_listing_data(listing: Listing, update_data: dict) -> Listing:
     for field, value in update_data.items():
         setattr(listing, field, value)
     return listing
+
+def has_favorite(db: Session, user_id: int, ad_id: int):
+    favorite = get_favorite(db, user_id, ad_id)
+    return favorite

@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     marginTop: 10,
+    fontWeight: 'normal',
   },
   timeContainer: {
     alignItems: 'flex-end',
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     marginTop: 1,
     alignSelf: 'flex-end',
-    marginLeft: 260,
+    marginLeft: 225,
   },
   unreadCount: {
     color: '#fff',

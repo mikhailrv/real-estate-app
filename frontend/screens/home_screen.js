@@ -43,7 +43,10 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.searchButton}>
+      <TouchableOpacity 
+        style={styles.searchButton} 
+        onPress={() => navigation.navigate('Search')}
+      >
         <Text style={styles.searchButtonText}>Поиск</Text>
       </TouchableOpacity>
 

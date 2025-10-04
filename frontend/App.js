@@ -1,6 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
 import { NavigationContainer } from '@react-navigation/native'; 
 import { createStackNavigator } from '@react-navigation/stack'; 
 import AuthScreen from './screens/auth_screen'; 
@@ -10,20 +8,28 @@ import FavoritesScreen from './screens/favorites_screen';
 import 'react-native-gesture-handler';
 import ChatsScreen from './screens/chats_screen'; 
 import ListingDetailsScreen from './screens/listing_details_screen';
+import MessagesScreen from './screens/messages_screen';
+import SearchScreen from './screens/search_screen';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 const Stack = createStackNavigator(); 
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Login" component={AuthScreen} />
-        <Stack.Screen name="Register" component={AuthScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Favorites" component={FavoritesScreen} />
-        <Stack.Screen name="Chats" component={ChatsScreen} />
-        <Stack.Screen name="ListingDetails" component={ListingDetailsScreen} />
-      </Stack.Navigator>
+      <SafeAreaView style={{ flex: 1 }}>
+        <Stack.Navigator>
+          <Stack.Screen name="Login" component={AuthScreen} />
+          <Stack.Screen name="Register" component={AuthScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Favorites" component={FavoritesScreen} />
+          <Stack.Screen name="Chats" component={ChatsScreen} />
+          <Stack.Screen name="ListingDetails" component={ListingDetailsScreen} />
+          <Stack.Screen name="Messages" component={MessagesScreen} />
+          <Stack.Screen name="Search" component={SearchScreen} />
+        </Stack.Navigator>
+      </SafeAreaView>
     </NavigationContainer>
   );
 }

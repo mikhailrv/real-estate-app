@@ -40,3 +40,5 @@ class ChatResponse(BaseModel):
     class Config:
         orm_mode = True
 
+class ChatIdResponse(BaseModel):
+    chat_id: int
