@@ -21,9 +21,9 @@
 🚧 Поиск и фильтрация (в разработке)  
 
 ## Структура проекта
-├── app/ # Backend (FastAPI)
-├── frontend/ # Frontend (React Native)
-└── screenshots/ # Screenshots
+
+- 📁 **app/** (Backend, FastAPI)
+- 📁 **frontend/** (Frontend, React Native)
 
 ## Запуск проекта
 
